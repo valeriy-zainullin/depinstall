@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Требуется, чтобы именах пакетов не было пробелов!
+#   Слава богу, что это так.
+# Да и ставить было бы тяжелее, один пакет за два
+#   глазами считался бы.
+
+# Если уже установлены (вручную), выйти из скрипта, не
+#   отмечать как установленные автоматически.
+to_install=""
+for package in $@; do
+  if [ ! -z "$(apt-mark showinstall $package)" ]; then
+    echo "Package $package is already installed."
+  else
+    to_install="$to_install $package"
+  fi
+done
+
+if [ -z "$to_install" ]; then
+  echo "Nothing to install."
+  exit 0
+fi
+
+sudo apt-get install $to_install || exit 1
+sudo apt-mark auto $to_install || exit 2
