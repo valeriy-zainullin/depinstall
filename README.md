@@ -20,3 +20,5 @@ fi
 ```
 
 Just copy this and paste into the terminal, press Enter.
+
+Sometimes packages you install may be "suggested" by other packages you already have in your system. Then `apt autoremove` won't think they are unused. Because they are used, for some additional functionality in other programs. At the moment, there is no way around that except manually deleting them.
