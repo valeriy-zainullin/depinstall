@@ -21,5 +21,28 @@ if [ -z "$to_install" ]; then
   exit 0
 fi
 
+# List packages, that would be installed.
+#   Also deps and etc..
+#   Let's hope there's no installations
+#   in between our apt calls (they
+#   probably will take longer than
+#   the time between commands, so our
+#   apt-get will fail to get lock and
+#   the user will retry).
+#   while we are working here.
+all_installed=$(sudo apt-get install -sy $to_install | grep -Po '^Inst \K[^ ]+ ')
+
 sudo apt-get install $to_install || exit 1
 sudo apt-mark auto $to_install || exit 2
+
+# Sometimes depinstalled packages are not removed,
+#   if they are recommended by any other packages.
+#   We will remove them ourselves. Also, some
+#   of dependencies may be recommended, so they
+#   will not be removed... We have to make a list,
+#   basically.
+depinstall_dir=$(dirname $(readlink -e "${BASH_SOURCE[0]}"))
+depinstall_log="$depinstall_dir/pkglog.txt"
+for package in $all_installed; do
+  echo $package >> "$depinstall_log"
+done

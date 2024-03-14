@@ -21,4 +21,8 @@ fi
 
 Just copy this and paste into the terminal, press Enter.
 
-Sometimes packages you install may be "suggested" by other packages you already have in your system. Then `apt autoremove` won't think they are unused. Because they are used, for some additional functionality in other programs. At the moment, there is no way around that except manually deleting them.
+Sometimes packages you install may be "suggested" by other packages you already have in your system. Then `apt autoremove` won't think they are unused. Because they are used, for some additional functionality in other programs. I recommend to use `depremove` for uninstallation, it should handle these cases.
+
+**Warning: you should not run two instances of depinstall/depremove at the same time from different users. It's not supported. The code of depinstall and depremove assumes there's other depinstalls, depremoves and apt jobs, while it's working.**
+
+Regarding apt jobs, it's sufficient that there are no apt-get jobs until installation/uninstallation stage. If there's an apt job at these points, apt-get will just fail to take the lock. And there will be no changes to your computer environment.

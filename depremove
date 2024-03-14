@@ -1,0 +1,19 @@
+#!/bin/bash
+
+depinstall_dir=$(dirname $(readlink -e "${BASH_SOURCE[0]}"))
+depinstall_log="$depinstall_dir/pkglog.txt"
+if [ ! -f "$depinstall_log" ]; then
+  echo "Nothing to uninstall."
+  exit 0
+fi
+
+packages=$(cat "$depinstall_log" | tr '\n' ' ')
+
+packages_nospace=$(echo "$packages" | tr -d ' ')
+if [ -z "$packages_nospace" ]; then
+  echo "Nothing to uninstall."
+  exit 0
+fi
+
+sudo apt-get purge -y $packages || exit 1
+rm "$depinstall_log"
